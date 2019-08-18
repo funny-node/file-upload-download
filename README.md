@@ -10,6 +10,8 @@ $ cd static
 $ vue serve App.vue
 ```
 
+demo 没做啥兼容，最好只上传一些常规的文件，比如 json, html, 图片文件等
+
 ## 文件上传
 
 文件上传的整体思路是，前端发起 post 请求，body 中携带文件，后端保存文件内容到服务器硬盘中，一般 koa 通过中间件，能用 ctx.request.files 或者 ctx.request.body.files 获取到上传的文件，然后保存即可
@@ -39,8 +41,6 @@ document.body.removeChild(eleLink)
 但是一般情况下文件只会保存在服务器中，而不会提供具体链接，这时则不能用上面的方法
 
 后端需要设置 `'Content-disposition', 'attachment; filename=xxx'`，前端需要构造表单提交或者用 window.open() 粗暴实现（会打开个新窗口，体验不好）
-
-没做啥兼容，最好只上传一些常规的文件，比如 json, html, 图片文件等
 
 ## 总结
 
