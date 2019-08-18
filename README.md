@@ -10,7 +10,7 @@ $ cd static
 $ vue serve App.vue
 ```
 
-demo 没做啥兼容，最好只上传一些常规的文件，比如 json, html, 图片文件等
+demo 没做啥兼容（主要是下载时的 Content-type 设置），最好只上传一些常规的文件，比如 json, html, 图片文件等
 
 ## 文件上传
 
