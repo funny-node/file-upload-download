@@ -18,7 +18,7 @@ demo 没做啥兼容，最好只上传一些常规的文件，比如 json, html,
 
 之前用的中间件是 koa-bodyparser，这个中间件不支持 multipart/form-data，也就不支持 files 上传（详细可以看 [这个 issue](https://github.com/koajs/bodyparser/issues/94))
 
-推荐的文件上传中间件是 [formidable](https://www.npmjs.com/package/formidable)，koa-body 恰好集成了它，所以直接用 koa-body 就可以实现了
+推荐的文件上传中间件是 [formidable](https://www.npmjs.com/package/formidable)，koa-body 恰好集成了它，所以直接用 koa-body 就可以实现了（如果用 formidable，则直接在上传接口中操作就可以了）
 
 一般的过程是，上传文件，为该文件设置个 key，将文件名存库（demo 中用 upload-files.json 这个文件模拟数据库存取），保存文件（一般文件名为随机字符串），这样通过 key 就能找到文件所有资料
 
