@@ -52,6 +52,7 @@ document.body.removeChild(eleLink)
     * 如果文件位置可以用 url 获取并且域名和前端同域，直接用 a 标签 download 属性可解
     * 用 window.open 或者前端构造表单进行下载（同时搭配后端设置 `'Content-disposition', 'attachment; filename=xxx'`）
     
+
 ---
 
 2019-10-01 补充：
@@ -79,3 +80,50 @@ curl 'http://localhost:2020/upload' -H 'Sec-Fetch-Mode: cors' -H 'Referer: http:
 
 然后在命令行复制过去，我们发现虽然还是能生成文件，**但是内容却传不过去**，这不难理解，请求的文件数据根本没有体现嘛（理论上应该传递过去一个二进制流）
 
+[form-data](https://www.npmjs.com/package/form-data) 模块可以很轻松地在 Node 中模拟上传表单
+
+```js
+const FormData = require('form-data')
+const fs = require('fs');
+const form = new FormData()
+// 需要上传的文件
+form.append('file', fs.createReadStream('./a.json'))
+
+form.submit('http://localhost:2020/upload', function(err, res) {
+  console.log(res.statusCode)
+})
+```
+
+我会有这个需求是因为我需要在一个 laravel-admin 构建的后台批量插入一些数据，也是 form 形式，然后也需要文件，看了下 [文档](https://github.com/form-data/form-data#integration-with-other-libraries)，form-data 库能和 request node-fetch 以及 axios 配合，因为我对 superagent 比较偏爱，最终发现 superagent 应该集成了 form-data，使用起来也是非常方便的（attach 为表单文件字段，field 为表单的其他字段）
+
+```js
+/**
+ * 提交一道题目
+ * img_url：图片在本地地址
+ * name: 题目名称
+ * level: 关卡（1-3）
+ * classify: 答案（1-4）
+ */
+function postQuestion({ img_url, name, level, classify }) {
+  return new Promise(resolve => {
+    agent.post('xxx')
+      .attach('img_url', img_url)
+      .field('name', name)
+      .field('status', 'on')
+      .field('level', level) // 关卡
+      .field('classify', classify) // 答案
+      .field('_token', _token)
+      .field('_previous_', 'xxx')
+      .end((err, res) => {
+        if (err || res.statusCode !== 200) {
+          resolve({
+            code: 201,
+            name
+          })
+        } else {
+          resolve({ code: 200 })
+        }
+      })
+  })
+}
+```
