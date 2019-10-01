@@ -51,3 +51,31 @@ document.body.removeChild(eleLink)
     * 不嫌麻烦，前端也可以构造 blob 下载
     * 如果文件位置可以用 url 获取并且域名和前端同域，直接用 a 标签 download 属性可解
     * 用 window.open 或者前端构造表单进行下载（同时搭配后端设置 `'Content-disposition', 'attachment; filename=xxx'`）
+    
+---
+
+2019-10-01 补充：
+
+服务开启后，如果需要 Node.js 模拟提交，应该怎么做？
+
+看了下客户端上传个文件，请求头的 `Content-Type` 值是 `multipart/form-data; boundary=----WebKitFormBoundaryFJB5iBjtsb2IUmAq`
+
+Form Data 的值是：
+
+```
+------WebKitFormBoundaryFJB5iBjtsb2IUmAq
+Content-Disposition: form-data; name="file"; filename="a (1) (3).json"
+Content-Type: application/json
+
+
+------WebKitFormBoundaryFJB5iBjtsb2IUmAq--
+```
+
+查看一下 cURL：
+
+```
+curl 'http://localhost:2020/upload' -H 'Sec-Fetch-Mode: cors' -H 'Referer: http://localhost:8080/' -H 'Origin: http://localhost:8080' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36' -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryFJB5iBjtsb2IUmAq' --data-binary $'------WebKitFormBoundaryFJB5iBjtsb2IUmAq\r\nContent-Disposition: form-data; name="file"; filename="a (1) (3).json"\r\nContent-Type: application/json\r\n\r\n\r\n------WebKitFormBoundaryFJB5iBjtsb2IUmAq--\r\n' --compressed
+```
+
+然后在命令行复制过去，我们发现虽然还是能生成文件，**但是内容却传不过去**，这不难理解，请求的文件数据根本没有体现嘛（理论上应该传递过去一个二进制流）
+
