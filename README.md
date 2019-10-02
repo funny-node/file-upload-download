@@ -94,6 +94,17 @@ form.submit('http://localhost:2020/upload', function(err, res) {
 })
 ```
 
+用 py 也是很方便的
+
+```py
+import requests
+url = 'http://localhost:2020/upload'
+files = {'file': open('a.json', 'rb')}
+r = requests.post(url, files=files)
+
+print(r.status_code)
+```
+
 我会有这个需求是因为我需要在一个 laravel-admin 构建的后台批量插入一些数据，也是 form 形式，然后也需要文件，看了下 [文档](https://github.com/form-data/form-data#integration-with-other-libraries)，form-data 库能和 request node-fetch 以及 axios 配合，因为我对 superagent 比较偏爱，最终发现 superagent 应该集成了 form-data，使用起来也是非常方便的（attach 为表单文件字段，field 为表单的其他字段）
 
 ```js
